@@ -1,7 +1,6 @@
 'use client'
 import { Header } from "@/components/header";
 import { ListNav } from "@/components/list";
-import { Button } from "@/components/ui/button";
 import { useSelectStore } from "@/lib/store";
 import { ArrowRight, CirclePlus, CircleX, Divide, Landmark, Menu, Pencil, X } from "lucide-react";
 import Image from "next/image";
@@ -13,7 +12,6 @@ export const subTopicNameI=["Geographical and Chronological Context","Urban Plan
 
 
 export default function Home() {
-  const [newToF,setNewToF]=useState(false);
     const [menu,setMenu]=useState(true);
 
     const topic=useSelectStore((state)=>state.topic)
@@ -33,18 +31,18 @@ export default function Home() {
             <div className="w-228 h-auto flex flex-col gap-6 px-7 py-9">
                 <div className="w-full h-71.4 flex gap-6">
                     <div className="flex justify-center items-center w-[415.5px] h-[286.5px] ">
-                        <Image width={415.5} className="w-[375.5px] h-[246.5px] transition-all duration-175 rounded-xl hover:rounded-2xl  hover:w-[415.5px] hover:h-[286.5px] shadow-md shadow-[hsl(0,30%,20%,50%)] hover:shadow-xl cursor-pointer" height={286.5} src="/architecture_main_page/Mohenjo-daro.jpg" alt="err" />
+                        <Image width={0} height={0} sizes="100vw" className="w-[375.5px] h-[246.5px] transition-all duration-175 rounded-xl hover:rounded-2xl  hover:w-[415.5px] hover:h-[286.5px] shadow-md shadow-[hsl(0,30%,20%,50%)] hover:shadow-xl cursor-pointer"  src="/architecture_main_page/Mohenjo-daro.jpg" alt="err" />
                     </div>
                     <div className="flex justify-center items-center w-[415.5px] h-[286.5px] ">
-                        <Image width={415.5} className="w-[375.5px] h-[246.5px] transition-all duration-175 rounded-xl hover:rounded-2xl  hover:w-[415.5px] hover:h-[286.5px] shadow-md shadow-[hsl(0,30%,20%,50%)] hover:shadow-xl cursor-pointer" height={286.5} src="/architecture_main_page/khajuraho-temples-in-madhya-pradesh-1.jpg" alt="err" />
+                        <Image width={0} height={0} sizes="100vw" className="w-[375.5px] h-[246.5px] transition-all duration-175 rounded-xl hover:rounded-2xl  hover:w-[415.5px] hover:h-[286.5px] shadow-md shadow-[hsl(0,30%,20%,50%)] hover:shadow-xl cursor-pointer"  src="/architecture_main_page/khajuraho-temples-in-madhya-pradesh-1.jpg" alt="err" />
                     </div>
                 </div>
                 <div className="w-full h-71.4 flex gap-6">
                         <div className="flex justify-center items-center w-[415.5px] h-[286.5px] ">
-                        <Image width={415.5} className="w-[375.5px] h-[246.5px] transition-all duration-175 rounded-xl hover:rounded-2xl  hover:w-[415.5px] hover:h-[286.5px] shadow-md shadow-[hsl(0,30%,20%,50%)] hover:shadow-xl cursor-pointer" height={286.5} src="/architecture_main_page/Tomb_of_Shah_Rukn-e-Alam_2014-07-31.jpg" alt="err" />
+                        <Image width={0} height={0} sizes="100vw" className="w-[375.5px] h-[246.5px] transition-all duration-175 rounded-xl hover:rounded-2xl  hover:w-[415.5px] hover:h-[286.5px] shadow-md shadow-[hsl(0,30%,20%,50%)] hover:shadow-xl cursor-pointer"  src="/architecture_main_page/Tomb_of_Shah_Rukn-e-Alam_2014-07-31.jpg" alt="err" />
                     </div>
                     <div className="flex justify-center items-center w-[415.5px] h-[286.5px] ">
-                        <Image width={415.5} className="w-[375.5px] h-[246.5px] transition-all duration-175 rounded-xl hover:rounded-2xl  hover:w-[415.5px] hover:h-[286.5px] shadow-md shadow-[hsl(0,30%,20%,50%)] hover:shadow-xl cursor-pointer" height={286.5} src="/architecture_main_page/pexels-sayan-purakait-716722737-18414740.jpg" alt="err" />
+                        <Image width={0} height={0} sizes="100vw" className="w-[375.5px] h-[246.5px] transition-all duration-175 rounded-xl hover:rounded-2xl  hover:w-[415.5px] hover:h-[286.5px] shadow-md shadow-[hsl(0,30%,20%,50%)] hover:shadow-xl cursor-pointer"  src="/architecture_main_page/pexels-sayan-purakait-716722737-18414740.jpg" alt="err" />
                     </div>
                 </div>
             </div>
@@ -54,15 +52,15 @@ export default function Home() {
 
     
       <div className="w-full h-full flex gap-12 px-24">
-            <div className="min-w-90 h-full">
+            {menu?<div className="min-w-90 h-full">
                 <div className="w-full h-auto px-5 pb-5 bg-[hsl(0,30%,20%,10%)] rounded-2xl flex flex-col ">
                     <div className="w-45 h-20 pt-3">
-                        <div onClick={()=>setMenu(!menu)} className="w-14 h-14 flex items-center justify-center">
+                        <div onClick={()=>setMenu(!menu)} className="w-14 h-14 flex items-center justify-center hover:cursor-pointer">
                             <Menu />
                         </div>
                     </div>
 
-                   {menu&& <div >
+                    <div >
                         {/*nav items*/}
                        <ul className="w-auto h-auto flex flex-col gap-3.5">
                             
@@ -81,33 +79,49 @@ export default function Home() {
                         <ListNav type="topic" liName="The Indo-Islamic Fusion"></ListNav>
                         <ListNav type="topic" liName="The Colonial Imprint"></ListNav>
                        </ul>
-                       
-                        
-
-                        
-                    </div>}
+                    </div>
                     
                 </div>
-            </div>
+                
+            </div>:<div className="w-auto h-full">
+                <div className="w-full h-auto px-5 pb-5">
+                             <div className="w-auto h-20 pt-3">
+                        <div onClick={()=>setMenu(!menu)} className="w-14 h-14 flex items-center justify-center hover:cursor-pointer">
+                            <Menu />
+                        </div>
+                    </div>       
+                    </div>
+            </div>}
+            
 
             <div className="w-auto h-full">
-                <div className="w-full h-full px-2 py-21 flex flex-col gap-12">
-                    <div className="w-full h-auto flex flex-col gap-6">
-                        <div className="w-full h-auto text-2xl">Geographical and Chronological Context</div>
-                    <div className="w-full h-full text-[18px]">
-                        The Indus Valley Civilization (IVC), also known as the Harappan Civilization, represents the Indian subcontinent's first foray into urbanism, flourishing as a Bronze Age culture from
-                        approximately 3300 BCE to 1300 BCE.4 Its mature, most urbanized phase is dated from 2600
-                        BCE to 1900 BCE.4 As one of the three earliest cradles of civilization, alongside Mesopotamia
-                        and Ancient Egypt, the IVC was the most geographically extensive, covering a vast area that
-                        includes modern-day Pakistan, northwestern India, and parts of northeastern Afghanistan.1 At
-                        its peak, the population may have exceeded five million people.1 The civilization's heartland
-                        was the alluvial plains of the Indus River and its tributaries, as well as the now-seasonal
-                        Ghaggar-Hakra river system.1 Major urban centers that have been excavated include Harappa
-                        and Mohenjo-daro in Pakistan, and Dholavira, Kalibangan, Lothal, and Rakhigarhi in India.1
-                    </div>
-                    </div>
+                <div className="w-full h-full pl-7 py-21 flex flex-col gap-12">
+                    
+                    <div className="w-full h-auto flex gap-5 items-center">
+                        
+                        <div className="w-full h-auto flex flex-col gap-6">
+                            <div className="w-full h-auto text-2xl">Geographical and Chronological Context</div>
+                            <div className="w-full h-auto text-[18px]">
+                                The Indus Valley Civilization (IVC), also known as the Harappan Civilization, represents the Indian subcontinent's first foray into urbanism, flourishing as a Bronze Age culture from
+                                approximately 3300 BCE to 1300 BCE.4 Its mature, most urbanized phase is dated from 2600
+                                BCE to 1900 BCE.4 As one of the three earliest cradles of civilization, alongside Mesopotamia
+                                and Ancient Egypt, the IVC was the most geographically extensive, covering a vast area that
+                                includes modern-day Pakistan, northwestern India, and parts of northeastern Afghanistan.1 At
+                                its peak, the population may have exceeded five million people.1 The civilization's heartland
+                                was the alluvial plains of the Indus River and its tributaries, as well as the now-seasonal
+                                Ghaggar-Hakra river system.1 Major urban centers that have been excavated include Harappa
+                                and Mohenjo-daro in Pakistan, and Dholavira, Kalibangan, Lothal, and Rakhigarhi in India.1
+                            </div>
+                        </div>
 
-                    <div className="w-full h-auto flex flex-col gap-6">
+                        <Image  width={0} height={0} className="w-full h-full" sizes="100vw" src="/architecture_main_page/Mohenjo-daro.jpg" alt="err"></Image>
+
+
+                    </div>
+                    
+                    <div className="w-full h-auto flex gap-5 items-center">
+                        
+                        <div className="w-full h-auto flex flex-col gap-6">
                         <div className="w-full h-auto text-2xl">Urban Planning and Societal Organization</div>
                     <div className="w-full h-full text-[18px]">
                         The most striking feature of the IVC is its highly sophisticated and standardized urban
@@ -136,6 +150,13 @@ export default function Home() {
                         functional, civic imperatives than by monarchical ambition.
                     </div>
                     </div>
+
+                        <Image  width={0} height={0} className="w-full h-full" sizes="100vw" src="/architecture_main_page/khajuraho-temples-in-madhya-pradesh-1.jpg" alt="err"></Image>
+
+
+                    </div>
+
+                    
                     
                 </div>
             </div>
