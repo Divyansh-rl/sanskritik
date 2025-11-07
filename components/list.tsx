@@ -1,8 +1,9 @@
 'use client'
 
 import { useSelectStore,topicType, sectionType, subtopicType} from "@/lib/store";
-import { ArrowDown, ArrowRight, ChevronDown, ChevronRight } from "lucide-react";
+import { ArrowDown, ArrowRight, ChevronDown, ChevronRight, Pencil } from "lucide-react";
 import { ReactNode, useState } from "react";
+import { Button } from "./ui/button";
 
 interface listProps{
     liName:String,
@@ -46,18 +47,19 @@ export function ListNav(props:listProps){
         }
     }
 
-   
+   const [hovering,setHovering]=useState(false);
+    const [navItemEdit,setNavItemEdit]=useState(false);
+    const [navItem,setNavItem]=useState(props.liName);
 
-  
     return (
     <li className="w-auto h-auto flex flex-col">
-         <div onClick={updateItem}  className={(props.type=='subTopic' && subTopic==props.liName)?"w-72 h-auto mb-4 flex items-center gap-3 rounded-[100px]  p-4 bg-[hsl(0,30%,20%,20%)] cursor-pointer":"w-72 h-auto mb-4 flex items-center gap-3 rounded-[100px]  p-4 transition-all duration-175 hover:bg-[hsl(0,30%,20%,20%)] cursor-pointer"}>
+         <div onMouseOver={()=>setHovering(true)} onMouseLeave={()=>setHovering(false)} onClick={updateItem}  className={(props.type=='subTopic' && subTopic==props.liName)?"w-72 h-auto mb-4 flex items-center gap-3 rounded-[100px]  p-4 bg-[hsl(0,30%,20%,20%)] cursor-pointer":"w-72 h-auto mb-4 flex items-center gap-3 rounded-[100px]  p-4 transition-all duration-175 hover:bg-[hsl(0,30%,20%,20%)] cursor-pointer"}>
        <div className="w-6 h-6 flex items-center justify-center gap-2">
             {props.type=="topic"&&(topic==props.liName?<div><ChevronDown/></div>:<div><ChevronRight/></div>)}
             {props.type=="section"&&(section==props.liName?<div><ChevronDown/></div>:<div><ChevronRight/></div>)}
         </div>
-        <div>{props.liName}</div>
-        
+        <div>{navItemEdit?<input onChange={(e)=>setNavItem(e.target.value)} value={navItem as string}></input>:navItem}</div>
+        {hovering?<div>{navItemEdit?<Button onClick={()=>setNavItemEdit(false)}>save</Button>:<Pencil onClick={()=>setNavItemEdit(true)}></Pencil>}</div>:<></>}
     </div>
         <div className="ml-4">{props.children}</div>
     </li>

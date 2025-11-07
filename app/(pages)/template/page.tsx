@@ -1,6 +1,7 @@
 'use client'
 import { Header } from "@/components/header";
 import { ListNav } from "@/components/list";
+import { Button } from "@/components/ui/button";
 import { useSelectStore } from "@/lib/store";
 import { ArrowRight, CirclePlus, CircleX, Divide, Landmark, Menu, Pencil, X } from "lucide-react";
 import Image from "next/image";
@@ -12,7 +13,11 @@ export const subTopicNameI=["Geographical and Chronological Context","Urban Plan
 
 
 export default function Home() {
-    const [menu,setMenu]=useState(true);
+    const [title,setTitle]=useState("Architecture");
+    const [titleEdit,setTitleEdit]=useState(false);
+    const [hovering,setHovering]=useState(false);
+
+    
 
     const topic=useSelectStore((state)=>state.topic)
     const section=useSelectStore((state)=>state.section)
@@ -24,7 +29,10 @@ export default function Home() {
 
     <div className="w-full h-auto flex flex-col gap-0 ">
         <div className="w-full h-22 flex justify-center items-center py-2 px-2">
-          <div className="w-70 h-18 text-5xl/16 ">Architecture</div>
+          <div className="w-auto h-18 text-5xl/16 ">{titleEdit?<div>
+            <input onChange={(e)=>setTitle(e.target.value)} value={title}></input>
+            {titleEdit?<Button onClick={()=>setTitleEdit(false)}>Save</Button>:<></>}
+            </div>:<div className="flex" onMouseLeave={()=>setHovering(false)} onMouseOver={()=>setHovering(true)}>{title}{hovering?<Pencil className="cursor-pointer" onClick={()=>setTitleEdit(true)}></Pencil>:<></>}</div>}</div>
       </div>
         
       <div className="w-full flex justify-center">
@@ -52,11 +60,11 @@ export default function Home() {
 
     
       <div className="w-full h-full flex gap-12 px-24">
-            {menu?<div className="min-w-90 h-full">
-                <div className="w-full h-auto px-5 pb-5 bg-[hsl(0,30%,20%,10%)] rounded-2xl flex flex-col ">
-                    <div className="w-45 h-20 pt-3">
-                        <div onClick={()=>setMenu(!menu)} className="w-14 h-14 flex items-center justify-center hover:cursor-pointer">
-                            <Menu />
+            <div className="min-w-90 h-full">
+                <div className="w-full h-auto px-5 py-5 bg-[hsl(0,30%,20%,10%)] rounded-2xl flex flex-col ">
+                    <div className="w-auto h-auto mt-3 mx-2">
+                        <div  className="w-auto h-auto flex items-center text-[22px] mb-4">
+                            Table of Contents
                         </div>
                     </div>
 
@@ -83,16 +91,7 @@ export default function Home() {
                     
                 </div>
                 
-            </div>:<div className="w-auto h-full">
-                <div className="w-full h-auto px-5 pb-5">
-                             <div className="w-auto h-20 pt-3">
-                        <div onClick={()=>setMenu(!menu)} className="w-14 h-14 flex items-center justify-center hover:cursor-pointer">
-                            <Menu />
-                        </div>
-                    </div>       
-                    </div>
-            </div>}
-            
+            </div>
 
             <div className="w-auto h-full">
                 <div className="w-full h-full pl-7 py-21 flex flex-col gap-12">
