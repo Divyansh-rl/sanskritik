@@ -56,6 +56,13 @@ setImage4(URL.createObjectURL(event.target.files[0]));
     const topic=useSelectStore((state)=>state.topic)
     const section=useSelectStore((state)=>state.section)
 
+    const [topics,setTopics]=useState([<div className="w-auto h-12 text-2xl flex items-center gap-2 mb-4"><Input type="text" placeholder="Enter topic name"></Input><Button >Submit</Button></div>]) 
+
+    function incTopics(){
+        setTopics(prevItems=>[...prevItems,<div className="w-auto h-auto text-2xl flex items-center gap-2 mb-4"><Input type="text" placeholder="Enter topic name"></Input><Button>Submit</Button></div>])
+    }
+
+
     const [paragraphs,setParagraphs]=useState([<div className="w-full h-auto flex gap-5 items-center">
                         
                         <div className="w-full h-auto flex flex-col gap-6">
@@ -114,6 +121,10 @@ setImage4(URL.createObjectURL(event.target.files[0]));
                     </div>])
     }
 
+    async function addTopicsAPI(){
+        
+    }
+
   return (
     <div className="w-full h-full bg-[#eee8c3] text-[#372111] flex flex-col gap-18">
       {/*Header*/}
@@ -157,9 +168,12 @@ setImage4(URL.createObjectURL(event.target.files[0]));
       <div className="w-full h-full flex gap-12 px-24">
             <div className="min-w-90 h-full">
                 <div className="w-full h-auto px-5 py-5 bg-[hsl(0,30%,20%,10%)] rounded-2xl flex flex-col ">
-                    <div className="w-auto h-auto mt-3 mx-2">
+                    <div className="w-auto h-auto mt-3 mx-2 flex justify-between">
                         <div  className="w-auto h-auto flex items-center text-[22px] mb-4">
                             Table of Contents
+                        </div>
+                        <div className="mt-1 cursor-pointer">
+                            <CirclePlus onClick={incTopics}></CirclePlus>
                         </div>
                     </div>
 
@@ -181,6 +195,10 @@ setImage4(URL.createObjectURL(event.target.files[0]));
                        <ListNav type="topic" liName="Hindu Architecture"></ListNav>
                         <ListNav type="topic" liName="The Indo-Islamic Fusion"></ListNav>
                         <ListNav type="topic" liName="The Colonial Imprint"></ListNav>
+                        
+                        {topics.map((items,index)=><div key={index}>{items}</div>)}
+                        
+                        
                        </ul>
                     </div>
                     
