@@ -1,15 +1,15 @@
-import { ContentModel } from "@/db/db";
+import { TopicModel} from "@/db/db";
+import connectDB from "@/lib/dbConnect";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req:NextRequest){
     try{
+        await connectDB();
         const body=await req.json();
-    const {pillar,topic,section}=body;
+    const {topic,topicNumber,pillarId}=body;
     
-    const content=await ContentModel.create({
-        pillar,
-        topic,
-        section
+    const content=await TopicModel.create({
+        topic:topic,topicNumber:topicNumber,pillarId:pillarId
     })
 
     if(content){
@@ -24,12 +24,10 @@ export async function POST(req:NextRequest){
 export async function GET(req:NextRequest){
     try{
         const body=await req.json();
-    const {pillar,topic,section}=body;
+    const {topicId}=body;
     
-    const content=await ContentModel.findOne({
-        pillar,
-        topic,
-        section
+    const content=await TopicModel.find({
+        topicId
     })
 
     if(content){

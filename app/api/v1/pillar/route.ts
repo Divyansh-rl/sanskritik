@@ -1,4 +1,4 @@
-import { ParagraphModel} from "@/db/db";
+import {  PillarModel } from "@/db/db";
 import connectDB from "@/lib/dbConnect";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -6,14 +6,14 @@ export async function POST(req:NextRequest){
     try{
         await connectDB();
         const body=await req.json();
-    const {title,paragraph,paragraphNumber,sectionId}=body;
+    const {pillar}=body;
     
-    const content=await ParagraphModel.create({
-       title,paragraph,paragraphNumber,sectionId
+    const content=await PillarModel.create({
+        pillar
     })
 
     if(content){
-        return NextResponse.json({message:"Content Created successfully"},{status:200})
+        return NextResponse.json({message:"Pillar Created successfully"},{status:200})
     }
     }catch(e){
         return NextResponse.json({message:"Server crashed"},{status:500})
@@ -24,10 +24,10 @@ export async function POST(req:NextRequest){
 export async function GET(req:NextRequest){
     try{
         const body=await req.json();
-    const {paragraphId}=body;
+    const {pillar}=body;
     
-    const content=await ParagraphModel.find({
-        paragraphId
+    const content=await PillarModel.findOne({
+        pillar
     })
 
     if(content){

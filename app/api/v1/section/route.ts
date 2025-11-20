@@ -1,4 +1,4 @@
-import { ParagraphModel} from "@/db/db";
+import { SectionModel} from "@/db/db";
 import connectDB from "@/lib/dbConnect";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -6,10 +6,10 @@ export async function POST(req:NextRequest){
     try{
         await connectDB();
         const body=await req.json();
-    const {title,paragraph,paragraphNumber,sectionId}=body;
+    const {section,sectionNumber,topicId}=body;
     
-    const content=await ParagraphModel.create({
-       title,paragraph,paragraphNumber,sectionId
+    const content=await SectionModel.create({
+       section:section,sectionNumber:sectionNumber,topicId:topicId
     })
 
     if(content){
@@ -24,10 +24,10 @@ export async function POST(req:NextRequest){
 export async function GET(req:NextRequest){
     try{
         const body=await req.json();
-    const {paragraphId}=body;
+    const {sectionId}=body;
     
-    const content=await ParagraphModel.find({
-        paragraphId
+    const content=await SectionModel.find({
+        sectionId
     })
 
     if(content){

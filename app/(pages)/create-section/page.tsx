@@ -2,10 +2,13 @@
 import { Header } from "@/components/header";
 import { ListNav } from "@/components/list";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { InputGroup, InputGroupAddon, InputGroupButton } from "@/components/ui/input-group";
 import { useSelectStore } from "@/lib/store";
 import { ArrowRight, CirclePlus, CircleX, Divide, Landmark, Menu, Pencil, X } from "lucide-react";
 import Image from "next/image";
 import { useState } from "react";
+import TextareaAutosize from 'react-textarea-autosize';
 
 export const liName=["Section I","Section II"]
 
@@ -52,6 +55,64 @@ setImage4(URL.createObjectURL(event.target.files[0]));
 
     const topic=useSelectStore((state)=>state.topic)
     const section=useSelectStore((state)=>state.section)
+
+    const [paragraphs,setParagraphs]=useState([<div className="w-full h-auto flex gap-5 items-center">
+                        
+                        <div className="w-full h-auto flex flex-col gap-6">
+                            <div className="w-96 h-auto text-2xl flex items-center gap-2"><Input type="text" placeholder="Enter Title of your paragraph"></Input><Button>Submit</Button></div>
+                            <div className="w-full h-auto text-[18px]">
+                                <div className="grid w-full max-w-sm gap-6">
+                                    <InputGroup>
+                                        <TextareaAutosize
+                                    data-slot="input-group-control"
+                                    className="flex field-sizing-content min-h-16 w-full resize-none rounded-md bg-transparent px-3 py-2.5 text-base transition-[color,box-shadow] outline-none md:text-sm"
+                                    placeholder="Autoresize textarea..."
+                                    />
+                                        <InputGroupAddon align="block-end">
+                                            <InputGroupButton className="ml-auto" size="sm" variant="default">
+                                                Submit
+                                            </InputGroupButton>
+                                        </InputGroupAddon>
+                                    </InputGroup>
+      
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* <Image  width={0} height={0} className="w-full h-full" sizes="100vw" src="/architecture_main_page/Mohenjo-daro.jpg" alt="err"></Image> */}
+
+
+                    </div>])
+
+    function incParas(){
+        setParagraphs(prevItems=>[...prevItems,<div className="w-full h-auto flex gap-5 items-center">
+                        
+                        <div className="w-full h-auto flex flex-col gap-6">
+                            <div className="w-96 h-auto text-2xl flex items-center gap-2"><Input type="text" placeholder="Enter Title of your paragraph"></Input><Button>Submit</Button></div>
+                            <div className="w-full h-auto text-[18px]">
+                                <div className="grid w-full max-w-sm gap-6">
+                                    <InputGroup>
+                                        <TextareaAutosize
+                                    data-slot="input-group-control"
+                                    className="flex field-sizing-content min-h-16 w-full resize-none rounded-md bg-transparent px-3 py-2.5 text-base transition-[color,box-shadow] outline-none md:text-sm"
+                                    placeholder="Autoresize textarea..."
+                                    />
+                                        <InputGroupAddon align="block-end">
+                                            <InputGroupButton className="ml-auto" size="sm" variant="default">
+                                                Submit
+                                            </InputGroupButton>
+                                        </InputGroupAddon>
+                                    </InputGroup>
+      
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* <Image  width={0} height={0} className="w-full h-full" sizes="100vw" src="/architecture_main_page/Mohenjo-daro.jpg" alt="err"></Image> */}
+
+
+                    </div>])
+    }
 
   return (
     <div className="w-full h-full bg-[#eee8c3] text-[#372111] flex flex-col gap-18">
@@ -128,30 +189,8 @@ setImage4(URL.createObjectURL(event.target.files[0]));
             </div>
 
             <div className="w-auto h-full">
+                <div className=" flex justify-end"><Button onClick={incParas}>Add</Button></div>
                 <div className="w-full h-full pl-7 py-21 flex flex-col gap-12">
-                    
-                    <div className="w-full h-auto flex gap-5 items-center">
-                        
-                        <div className="w-full h-auto flex flex-col gap-6">
-                            <div className="w-full h-auto text-2xl">Geographical and Chronological Context</div>
-                            <div className="w-full h-auto text-[18px]">
-                                The Indus Valley Civilization (IVC), also known as the Harappan Civilization, represents the Indian subcontinent's first foray into urbanism, flourishing as a Bronze Age culture from
-                                approximately 3300 BCE to 1300 BCE.4 Its mature, most urbanized phase is dated from 2600
-                                BCE to 1900 BCE.4 As one of the three earliest cradles of civilization, alongside Mesopotamia
-                                and Ancient Egypt, the IVC was the most geographically extensive, covering a vast area that
-                                includes modern-day Pakistan, northwestern India, and parts of northeastern Afghanistan.1 At
-                                its peak, the population may have exceeded five million people.1 The civilization's heartland
-                                was the alluvial plains of the Indus River and its tributaries, as well as the now-seasonal
-                                Ghaggar-Hakra river system.1 Major urban centers that have been excavated include Harappa
-                                and Mohenjo-daro in Pakistan, and Dholavira, Kalibangan, Lothal, and Rakhigarhi in India.1
-                            </div>
-                        </div>
-
-                        <Image  width={0} height={0} className="w-full h-full" sizes="100vw" src="/architecture_main_page/Mohenjo-daro.jpg" alt="err"></Image>
-
-
-                    </div>
-                    
                     <div className="w-full h-auto flex gap-5 items-center">
                         
                         <div className="w-full h-auto flex flex-col gap-6">
@@ -188,6 +227,39 @@ setImage4(URL.createObjectURL(event.target.files[0]));
 
 
                     </div>
+
+
+                    {/* <div className="w-full h-auto flex gap-5 items-center">
+                        
+                        <div className="w-full h-auto flex flex-col gap-6">
+                            <div className="w-96 h-auto text-2xl flex items-center gap-2"><Input type="text" placeholder="Enter Title of your paragraph"></Input><Button>Submit</Button></div>
+                            <div className="w-full h-auto text-[18px]">
+                                <div className="grid w-full max-w-sm gap-6">
+                                    <InputGroup>
+                                        <TextareaAutosize
+                                    data-slot="input-group-control"
+                                    className="flex field-sizing-content min-h-16 w-full resize-none rounded-md bg-transparent px-3 py-2.5 text-base transition-[color,box-shadow] outline-none md:text-sm"
+                                    placeholder="Autoresize textarea..."
+                                    />
+                                        <InputGroupAddon align="block-end">
+                                            <InputGroupButton className="ml-auto" size="sm" variant="default">
+                                                Submit
+                                            </InputGroupButton>
+                                        </InputGroupAddon>
+                                    </InputGroup>
+      
+                                </div>
+                            </div>
+                        </div>
+
+                        <Image  width={0} height={0} className="w-full h-full" sizes="100vw" src="/architecture_main_page/Mohenjo-daro.jpg" alt="err"></Image>
+
+
+                    </div> */}
+
+                    {paragraphs.map((item,index)=><div key={index}>{item}</div>)}
+                    
+                    
 
                     
                     

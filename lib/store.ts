@@ -19,7 +19,6 @@ export interface stateType{
 }
 
 
-
 export const useSelectStore=create<stateType>((set)=>({
     topic:"",
     section:"",
@@ -33,4 +32,18 @@ export const useSelectStore=create<stateType>((set)=>({
     selectSubTopic:(selected)=>{
         set(()=>({subtopic:selected}))
     }
+}))
+
+export interface paragraphType{
+count:number,
+incCount:()=>void,
+decCount:()=>void
+}
+
+export const useParagraphStore=create<paragraphType>((set)=>({
+    count:1,
+    incCount:()=>{
+        set((state)=>({count:state.count+1}))
+    },
+    decCount:()=>set((state)=>({count:state.count-1}))
 }))
