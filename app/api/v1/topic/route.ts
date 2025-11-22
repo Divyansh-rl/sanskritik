@@ -6,10 +6,10 @@ export async function POST(req:NextRequest){
     try{
         await connectDB();
         const body=await req.json();
-    const {topic,topicNumber,pillarId}=body;
+    const {topic,pillarId}=body;
     
     const content=await TopicModel.create({
-        topic:topic,topicNumber:topicNumber,pillarId:pillarId
+        topic:topic,pillarId:pillarId
     })
 
     if(content){

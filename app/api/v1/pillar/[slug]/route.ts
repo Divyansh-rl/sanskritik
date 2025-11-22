@@ -21,20 +21,24 @@ export async function POST(req:NextRequest){
     
 }
 
-export async function GET(req:NextRequest){
-    try{
-        const body=await req.json();
-    const {pillar}=body;
-    
-    const content=await PillarModel.findOne({
-        pillar
-    })
+interface paramsType{
+    slug:string
+}
 
-    if(content){
+export async function GET(req:NextRequest,{params}:{params:paramsType}){
+    try{
+        await connectDB();
+    const slug=(await params).slug;
+
+    const content=await PillarModel.findOne({
+        pillar:slug
+    }).populate('topicId')
+
+    
         return NextResponse.json({message:content},{status:200})
-    }
+    
     }catch(e){
-        return NextResponse.json({message:"Server crashed"},{status:500})
+        return NextResponse.json({message:"Server Crashed"})
     }
     
 }

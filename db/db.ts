@@ -11,7 +11,6 @@ const PillarSchema=new Schema({
 
 const TopicSchema=new Schema({
     topic:{type:String},
-    topicNumber:Number,
     pillarId:{type:ObjectId,ref:'pillars'},
     sectionId:[{type:ObjectId,ref:'sections'}]
 })

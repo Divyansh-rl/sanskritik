@@ -5,16 +5,15 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { InputGroup, InputGroupAddon, InputGroupButton } from "@/components/ui/input-group";
 import { useSelectStore } from "@/lib/store";
+import axios from "axios";
 import { ArrowRight, CirclePlus, CircleX, Divide, Landmark, Menu, Pencil, X } from "lucide-react";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import TextareaAutosize from 'react-textarea-autosize';
 
 export const liName=["Section I","Section II"]
 
 export const subTopicNameI=["Geographical and Chronological Context","Urban Planning and Societal Organization","Economy, Technology, and Trade","Art, Script, and Religion","Decline and Legacy"]
-
-
 
 
 export default function Home() {
@@ -56,12 +55,46 @@ setImage4(URL.createObjectURL(event.target.files[0]));
     const topic=useSelectStore((state)=>state.topic)
     const section=useSelectStore((state)=>state.section)
 
-    const [topics,setTopics]=useState([<div className="w-auto h-12 text-2xl flex items-center gap-2 mb-4"><Input type="text" placeholder="Enter topic name"></Input><Button >Submit</Button></div>]) 
+    const topicRef=useRef<HTMLInputElement>(null)
+    // let topicNumber:number=-1
+    // useEffect(()=>{
+        
+    //     async function getTopics(){
+    //         try{
+    //             const topics=await axios.get("http://localhost:3000/api/v1/pillar/Architecture")
+    //             if(topics.data){
+    //                 //@ts-ignore
+    //                return topics.data.message.topicId.length
+                    
+    //             }
+                
+    //         }catch(e:any){
+    //             console.log(e.topics.data)
+    //         }
+    //     }
+    //     async function getTopics2() {
+    //       topicNumber=(await getTopics())  
+    //     }
+    // },[])
+    //     console.log(topicNumber)
+
+    const [topics,setTopics]=useState([<div className="w-auto h-12 text-2xl flex items-center gap-2 mb-4"><Input ref={topicRef} type="text" placeholder="Enter topic name"></Input><Button onClick={()=>{
+        const value=topicRef.current?.value;
+        if(typeof value=="string")
+        setTopicNew(prev=>[...prev,value])
+        
+    }}>Done</Button></div>]) 
 
     function incTopics(){
-        setTopics(prevItems=>[...prevItems,<div className="w-auto h-auto text-2xl flex items-center gap-2 mb-4"><Input type="text" placeholder="Enter topic name"></Input><Button>Submit</Button></div>])
+        setTopics(prevItems=>[...prevItems,<div className="w-auto h-auto text-2xl flex items-center gap-2 mb-4"><Input type="text" placeholder="Enter topic name"></Input><Button onClick={()=>{
+        const value=topicRef.current?.value;
+        if(typeof value=="string")
+        setTopicNew(prev=>[...prev,value])
+        
+    }}>Done</Button></div>])
     }
 
+    const [topicNew,setTopicNew]=useState([""]);
 
     const [paragraphs,setParagraphs]=useState([<div className="w-full h-auto flex gap-5 items-center">
                         
@@ -122,7 +155,11 @@ setImage4(URL.createObjectURL(event.target.files[0]));
     }
 
     async function addTopicsAPI(){
-        
+        const topicName=topicRef.current?.value
+
+        axios.post("http://localhost:3000/api/v1/topic",{
+            topic:topicName,
+        })
     }
 
   return (
@@ -181,7 +218,7 @@ setImage4(URL.createObjectURL(event.target.files[0]));
                         {/*nav items*/}
                        <ul className="w-auto h-auto flex flex-col gap-3.5">
                             
-                        <ListNav type="topic" liName="Ancient Foundations">
+                        {/* <ListNav type="topic" liName="Ancient Foundations">
                             
                             {topic=="Ancient Foundations"&&<ul >
                                 <ListNav type="section" liName="Section I">
@@ -194,8 +231,10 @@ setImage4(URL.createObjectURL(event.target.files[0]));
                         
                        <ListNav type="topic" liName="Hindu Architecture"></ListNav>
                         <ListNav type="topic" liName="The Indo-Islamic Fusion"></ListNav>
-                        <ListNav type="topic" liName="The Colonial Imprint"></ListNav>
+                        <ListNav type="topic" liName="The Colonial Imprint"></ListNav> */}
                         
+                        {topicNew.map((items,index)=>items==""?null:<ListNav key={index} type="topic" liName={items}></ListNav>)}
+
                         {topics.map((items,index)=><div key={index}>{items}</div>)}
                         
                         
