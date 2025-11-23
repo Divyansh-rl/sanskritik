@@ -2,6 +2,7 @@ import { TopicModel} from "@/db/db";
 import connectDB from "@/lib/dbConnect";
 import { NextRequest, NextResponse } from "next/server";
 
+
 export async function POST(req:NextRequest){
     try{
         await connectDB();
@@ -12,8 +13,10 @@ export async function POST(req:NextRequest){
         topic:topic,pillarId:pillarId
     })
 
+    const contentId=content._id;
+
     if(content){
-        return NextResponse.json({message:"Content Created successfully"},{status:200})
+        return NextResponse.json({message:"Content Created successfully",topicId:contentId},{status:200})
     }
     }catch(e){
         return NextResponse.json({message:"Server crashed"},{status:500})

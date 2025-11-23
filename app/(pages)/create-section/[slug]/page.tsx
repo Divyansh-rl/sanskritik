@@ -8,6 +8,7 @@ import { useSelectStore } from "@/lib/store";
 import axios from "axios";
 import { ArrowRight, CirclePlus, CircleX, Divide, Landmark, Menu, Pencil, X } from "lucide-react";
 import Image from "next/image";
+import { useParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import TextareaAutosize from 'react-textarea-autosize';
 
@@ -82,15 +83,18 @@ setImage4(URL.createObjectURL(event.target.files[0]));
         const value=topicRef.current?.value;
         if(typeof value=="string")
         setTopicNew(prev=>[...prev,value])
-        
+        addTopicsAPI()
+        setTopics(prevItems=>prevItems.slice(1))
     }}>Done</Button></div>]) 
+
 
     function incTopics(){
         setTopics(prevItems=>[...prevItems,<div className="w-auto h-auto text-2xl flex items-center gap-2 mb-4"><Input type="text" placeholder="Enter topic name"></Input><Button onClick={()=>{
         const value=topicRef.current?.value;
         if(typeof value=="string")
         setTopicNew(prev=>[...prev,value])
-        
+        addTopicsAPI()
+        setTopics(prevItems=>prevItems.slice(1))
     }}>Done</Button></div>])
     }
 
@@ -154,12 +158,34 @@ setImage4(URL.createObjectURL(event.target.files[0]));
                     </div>])
     }
 
-    async function addTopicsAPI(){
-        const topicName=topicRef.current?.value
+    let pillarId:string;
+    
+    useEffect(()=>{
+        async function getThatPillarId(){
+            const pillar=await axios.get("http://localhost:3000/api/v1/pillar/architecture")
+            //@ts-ignore
+            pillarId=pillar.data.pillarId
+        }
+        getThatPillarId()
+    },[])
 
-        axios.post("http://localhost:3000/api/v1/topic",{
+    const params=useParams()
+
+    async function addTopicsAPI(){
+        const topicName= topicRef.current?.value
+
+        const topic=await axios.post("http://localhost:3000/api/v1/topic",{
             topic:topicName,
+            pillarId:pillarId
         })
+        //@ts-ignore
+        const topicId=topic.data.topicId
+
+        await axios.put("http://localhost:3000/api/v1/pillar/architecture",{
+            pillar:params.slug,
+            topicId:topicId
+        })
+
     }
 
   return (

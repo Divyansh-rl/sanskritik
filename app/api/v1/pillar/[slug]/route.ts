@@ -14,6 +14,8 @@ export async function POST(req:NextRequest){
 
     if(content){
         return NextResponse.json({message:"Pillar Created successfully"},{status:200})
+    }else{
+        return NextResponse.json({message:"Pillar not created, try again"})
     }
     }catch(e){
         return NextResponse.json({message:"Server crashed"},{status:500})
@@ -34,11 +36,31 @@ export async function GET(req:NextRequest,{params}:{params:paramsType}){
         pillar:slug
     }).populate('topicId')
 
-    
-        return NextResponse.json({message:content},{status:200})
+    const contentId=content?._id
+        return NextResponse.json({message:content,pillarId:contentId},{status:200})
     
     }catch(e){
         return NextResponse.json({message:"Server Crashed"})
     }
     
+}
+
+export async function PUT(req:NextRequest) {
+    try{
+        await connectDB();
+
+        const body=await req.json();
+        const {pillar,topicId}=body;
+
+        await PillarModel.updateOne({
+            pillar:pillar
+        },{
+            $push:{topicId:topicId}
+        })
+
+        return NextResponse.json({message:"Updated successfully"},{status:200})
+
+    }catch(e){
+        return NextResponse.json({message:"Server Crashed"},{status:500})
+    }
 }
