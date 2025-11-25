@@ -47,3 +47,21 @@ export const useParagraphStore=create<paragraphType>((set)=>({
     },
     decCount:()=>set((state)=>({count:state.count-1}))
 }))
+
+interface PillarInterface{
+    pillarId:string
+    setPillarId:(selected:string)=>void,
+    pillarLock:boolean,
+    setPillarLock:()=>void
+}
+
+export const useSelectPillar=create<PillarInterface>((set)=>({
+    pillarId:"",
+    setPillarId:(selected)=>{
+        set(()=>({pillarId:selected}))
+    },
+    pillarLock:false,
+    setPillarLock:()=>{
+        set((state)=>({pillarLock:!(state.pillarLock)}))
+    }
+}))

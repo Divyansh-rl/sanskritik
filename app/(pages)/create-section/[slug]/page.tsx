@@ -4,7 +4,7 @@ import { ListNav } from "@/components/list";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { InputGroup, InputGroupAddon, InputGroupButton } from "@/components/ui/input-group";
-import { useSelectStore } from "@/lib/store";
+import { useSelectPillar, useSelectStore } from "@/lib/store";
 import axios from "axios";
 import { ArrowRight, CirclePlus, CircleX, Divide, Landmark, Menu, Pencil, X } from "lucide-react";
 import Image from "next/image";
@@ -57,44 +57,21 @@ setImage4(URL.createObjectURL(event.target.files[0]));
     const section=useSelectStore((state)=>state.section)
 
     const topicRef=useRef<HTMLInputElement>(null)
-    // let topicNumber:number=-1
-    // useEffect(()=>{
-        
-    //     async function getTopics(){
-    //         try{
-    //             const topics=await axios.get("http://localhost:3000/api/v1/pillar/Architecture")
-    //             if(topics.data){
-    //                 //@ts-ignore
-    //                return topics.data.message.topicId.length
-                    
-    //             }
-                
-    //         }catch(e:any){
-    //             console.log(e.topics.data)
-    //         }
-    //     }
-    //     async function getTopics2() {
-    //       topicNumber=(await getTopics())  
-    //     }
-    // },[])
-    //     console.log(topicNumber)
 
-    const [topics,setTopics]=useState([<div className="w-auto h-12 text-2xl flex items-center gap-2 mb-4"><Input ref={topicRef} type="text" placeholder="Enter topic name"></Input><Button onClick={()=>{
+    const [topics,setTopics]=useState([<div className="w-auto h-12 text-2xl flex items-center gap-2 mb-4"><Input ref={topicRef} type="text" placeholder="Enter topic name"></Input><Button onClick={async ()=>{
         const value=topicRef.current?.value;
         if(typeof value=="string")
-        setTopicNew(prev=>[...prev,value])
-        addTopicsAPI()
-        setTopics(prevItems=>prevItems.slice(1))
+        await setTopicNew(prev=>[...prev,value])
+        await addTopicsAPI()
     }}>Done</Button></div>]) 
 
 
     function incTopics(){
-        setTopics(prevItems=>[...prevItems,<div className="w-auto h-auto text-2xl flex items-center gap-2 mb-4"><Input type="text" placeholder="Enter topic name"></Input><Button onClick={()=>{
+        setTopics(prevItems=>[...prevItems,<div className="w-auto h-auto text-2xl flex items-center gap-2 mb-4"><Input ref={topicRef} type="text" placeholder="Enter topic name"></Input><Button onClick={async()=>{
         const value=topicRef.current?.value;
         if(typeof value=="string")
-        setTopicNew(prev=>[...prev,value])
-        addTopicsAPI()
-        setTopics(prevItems=>prevItems.slice(1))
+        await setTopicNew(prev=>[...prev,value])
+        await addTopicsAPI()
     }}>Done</Button></div>])
     }
 
@@ -158,22 +135,15 @@ setImage4(URL.createObjectURL(event.target.files[0]));
                     </div>])
     }
 
-    let pillarId:string;
-    
-    useEffect(()=>{
-        async function getThatPillarId(){
-            const pillar=await axios.get("http://localhost:3000/api/v1/pillar/architecture")
-            //@ts-ignore
-            pillarId=pillar.data.pillarId
-        }
-        getThatPillarId()
-    },[])
-
     const params=useParams()
 
     async function addTopicsAPI(){
-        const topicName= topicRef.current?.value
-
+        const topicName= topicRef.current?.value    
+        
+        const pillar=await axios.get("http://localhost:3000/api/v1/pillar/architecture")
+        //@ts-ignore
+        const pillarId=pillar.data.pillarId
+        
         const topic=await axios.post("http://localhost:3000/api/v1/topic",{
             topic:topicName,
             pillarId:pillarId
@@ -185,8 +155,21 @@ setImage4(URL.createObjectURL(event.target.files[0]));
             pillar:params.slug,
             topicId:topicId
         })
-
+        setTopics(prevItems=>prevItems.slice(1))
     }
+
+    useEffect(()=>{
+        async function getTopics(){
+            const pillar=await axios.get("http://localhost:3000/api/v1/pillar/architecture")
+        
+        //@ts-ignore
+        const temp=pillar.data.message.topicId.map((state:any)=>state=state.topic)
+        for(let i=0;i<temp.length;i++){
+            setTopicNew(prev=>[...prev,temp[i]])
+        }
+        }
+        getTopics()
+    },[])
 
   return (
     <div className="w-full h-full bg-[#eee8c3] text-[#372111] flex flex-col gap-18">
