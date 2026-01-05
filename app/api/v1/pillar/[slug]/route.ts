@@ -34,10 +34,11 @@ export async function GET(req:NextRequest,{params}:{params:paramsType}){
 
     const content=await PillarModel.findOne({
         pillar:slug
-    }).populate('topicId')
+    }).populate('topicId').populate('sectionId')
 
     const contentId=content?._id
-        return NextResponse.json({message:content,pillarId:contentId},{status:200})
+    const pillarName=content?.pillar
+        return NextResponse.json({message:content,pillarId:contentId,pillarName:pillarName},{status:200})
     
     }catch(e){
         return NextResponse.json({message:"Server Crashed"})
@@ -50,13 +51,41 @@ export async function PUT(req:NextRequest) {
         await connectDB();
 
         const body=await req.json();
-        const {pillar,topicId}=body;
+        const {pillar,topicId,pushOrPull,sectionId}=body;
 
-        await PillarModel.updateOne({
+        if(topicId){
+            if(pushOrPull=="push"){
+            await PillarModel.updateOne({
             pillar:pillar
         },{
             $push:{topicId:topicId}
         })
+        }else if(pushOrPull=="pull"){
+            await PillarModel.updateOne({
+            pillar:pillar
+        },{
+            $pull:{topicId:topicId}
+        })
+        }
+        }
+
+        if(sectionId){
+            if(pushOrPull=="push"){
+            await PillarModel.updateOne({
+            pillar:pillar
+        },{
+            $push:{sectionId:sectionId}
+        })
+        }else if(pushOrPull=="pull"){
+            await PillarModel.updateOne({
+            pillar:pillar
+        },{
+            $pull:{sectionId:sectionId}
+        })
+        }
+        }
+        
+        
 
         return NextResponse.json({message:"Updated successfully"},{status:200})
 

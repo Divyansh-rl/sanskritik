@@ -6,7 +6,8 @@ const ObjectId=mongoose.Schema.Types.ObjectId;
 
 const PillarSchema=new Schema({
     pillar:{type:String,required:true},
-    topicId:[{type:ObjectId,ref:'topics'}]
+    topicId:[{type:ObjectId,ref:'topics'}],
+    sectionId:[{type:ObjectId,ref:'sections'}]
 })
 
 const TopicSchema=new Schema({
@@ -17,9 +18,10 @@ const TopicSchema=new Schema({
 
 const SectionSchema=new Schema({
     section:{type:String},
-    sectionNumber:Number,
+    topic:{type:String},
+    pillarId:{type:ObjectId,ref:'pillars'},
     topicId:{type:ObjectId,ref:'topics'},
-    paragraphId:[{type:ObjectId,ref:'paragraphs'}]
+    paragraphId:[{type:ObjectId,ref:'paragraphs'}],
 })
 
 const ParagraphSchema=new Schema({

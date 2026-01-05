@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { v4 as uuidv4 } from 'uuid';
 
 export type topicType="Ancient Foundations"|
     "Hindu Architecture"|
@@ -48,20 +49,36 @@ export const useParagraphStore=create<paragraphType>((set)=>({
     decCount:()=>set((state)=>({count:state.count-1}))
 }))
 
-interface PillarInterface{
-    pillarId:string
-    setPillarId:(selected:string)=>void,
-    pillarLock:boolean,
-    setPillarLock:()=>void
+interface topicInterface{
+    topicNew:{uuid:string,value:String}[],
+    setTopicNew:(newItem:String)=>void,
+    removeTopic:(uuid:string)=>void
+
 }
 
-export const useSelectPillar=create<PillarInterface>((set)=>({
-    pillarId:"",
-    setPillarId:(selected)=>{
-        set(()=>({pillarId:selected}))
+export const useTopicStore=create<topicInterface>((set)=>({
+    topicNew:[{uuid:uuidv4(),value:""}],
+    setTopicNew:(newItem)=>{
+        set((state)=>({topicNew:[...state.topicNew,{uuid:uuidv4(),value:newItem}]}))
     },
-    pillarLock:false,
-    setPillarLock:()=>{
-        set((state)=>({pillarLock:!(state.pillarLock)}))
+    removeTopic:(uuid)=>{
+        set((state)=>({topicNew:state.topicNew.filter((e)=>e.uuid!=uuid)}))
+    }
+}))
+
+interface sectionInterface{
+    sectionNew:{uuid:string,value:String,topic:String}[],
+    setSectionNew:(newItem:String,topic:String)=>void,
+    removeSection:(uuid:string)=>void
+
+}
+
+export const useSectionStore=create<sectionInterface>((set)=>({
+    sectionNew:[{uuid:uuidv4(),value:"",topic:""}],
+    setSectionNew:(newItem,topic)=>{
+        set((state)=>({sectionNew:[...state.sectionNew,{uuid:uuidv4(),value:newItem,topic:topic}]}))
+    },
+    removeSection:(uuid)=>{
+        set((state)=>({sectionNew:state.sectionNew.filter((e)=>e.uuid!=uuid)}))
     }
 }))

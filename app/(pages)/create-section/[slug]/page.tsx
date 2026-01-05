@@ -4,7 +4,7 @@ import { ListNav } from "@/components/list";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { InputGroup, InputGroupAddon, InputGroupButton } from "@/components/ui/input-group";
-import { useSelectPillar, useSelectStore } from "@/lib/store";
+import { useSectionStore, useSelectStore, useTopicStore } from "@/lib/store";
 import axios from "axios";
 import { ArrowRight, CirclePlus, CircleX, Divide, Landmark, Menu, Pencil, X } from "lucide-react";
 import Image from "next/image";
@@ -61,7 +61,7 @@ setImage4(URL.createObjectURL(event.target.files[0]));
     const [topics,setTopics]=useState([<div className="w-auto h-12 text-2xl flex items-center gap-2 mb-4"><Input ref={topicRef} type="text" placeholder="Enter topic name"></Input><Button onClick={async ()=>{
         const value=topicRef.current?.value;
         if(typeof value=="string")
-        await setTopicNew(prev=>[...prev,value])
+        await setTopicNew(value)
         await addTopicsAPI()
     }}>Done</Button></div>]) 
 
@@ -70,12 +70,15 @@ setImage4(URL.createObjectURL(event.target.files[0]));
         setTopics(prevItems=>[...prevItems,<div className="w-auto h-auto text-2xl flex items-center gap-2 mb-4"><Input ref={topicRef} type="text" placeholder="Enter topic name"></Input><Button onClick={async()=>{
         const value=topicRef.current?.value;
         if(typeof value=="string")
-        await setTopicNew(prev=>[...prev,value])
+        await setTopicNew(value)
         await addTopicsAPI()
     }}>Done</Button></div>])
     }
 
-    const [topicNew,setTopicNew]=useState([""]);
+    const topicNew=useTopicStore((state)=>state.topicNew)
+    const setTopicNew=useTopicStore((state)=>state.setTopicNew)
+    const sectionNew=useSectionStore((state)=>state.sectionNew)
+    const setSectionNew=useSectionStore((state)=>state.setSectionNew)
 
     const [paragraphs,setParagraphs]=useState([<div className="w-full h-auto flex gap-5 items-center">
                         
@@ -139,8 +142,8 @@ setImage4(URL.createObjectURL(event.target.files[0]));
 
     async function addTopicsAPI(){
         const topicName= topicRef.current?.value    
-        
-        const pillar=await axios.get("http://localhost:3000/api/v1/pillar/architecture")
+        setTopics(prevItems=>prevItems.slice(1))
+        const pillar=await axios.get("http://localhost:3000/api/v1/pillar/Architecture")
         //@ts-ignore
         const pillarId=pillar.data.pillarId
         
@@ -151,21 +154,30 @@ setImage4(URL.createObjectURL(event.target.files[0]));
         //@ts-ignore
         const topicId=topic.data.topicId
 
-        await axios.put("http://localhost:3000/api/v1/pillar/architecture",{
+        await axios.put("http://localhost:3000/api/v1/Architecture",{
             pillar:params.slug,
-            topicId:topicId
+            topicId:topicId,
+            pushOrPull:"push"
         })
-        setTopics(prevItems=>prevItems.slice(1))
+        
     }
 
     useEffect(()=>{
         async function getTopics(){
-            const pillar=await axios.get("http://localhost:3000/api/v1/pillar/architecture")
+            const pillar=await axios.get("http://localhost:3000/api/v1/pillar/Architecture")
         
         //@ts-ignore
-        const temp=pillar.data.message.topicId.map((state:any)=>state=state.topic)
-        for(let i=0;i<temp.length;i++){
-            setTopicNew(prev=>[...prev,temp[i]])
+        const tempTopics=pillar.data.message.topicId.map((state:any)=>state=state.topic)
+        for(let i=0;i<tempTopics.length;i++){
+            setTopicNew(tempTopics[i])
+        }
+
+        //@ts-ignore
+        const tempSections=pillar.data.message.sectionId.map((state:any)=>state=state.section)
+        //@ts-ignore
+        const tempSectionsTopic=pillar.data.message.sectionId.map((state:any)=>state=state.topic)
+        for(let i=0;i<tempSections.length;i++){
+            setSectionNew(tempSections[i],tempSectionsTopic[i])
         }
         }
         getTopics()
@@ -242,7 +254,11 @@ setImage4(URL.createObjectURL(event.target.files[0]));
                         <ListNav type="topic" liName="The Indo-Islamic Fusion"></ListNav>
                         <ListNav type="topic" liName="The Colonial Imprint"></ListNav> */}
                         
-                        {topicNew.map((items,index)=>items==""?null:<ListNav key={index} type="topic" liName={items}></ListNav>)}
+                        {topicNew.map((items)=>items.value==""?null:<ListNav key={items.uuid} type="topic" key2={items.uuid} liName={items.value}>
+                             {sectionNew.map((state)=>state.topic==items.value&&<ul key={state.uuid}> 
+                                <ListNav type="section" liName={state.value}  key2={state.uuid}></ListNav>
+                             </ul>)}
+                        </ListNav>)}
 
                         {topics.map((items,index)=><div key={index}>{items}</div>)}
                         
