@@ -82,3 +82,19 @@ export const useSectionStore=create<sectionInterface>((set)=>({
         set((state)=>({sectionNew:state.sectionNew.filter((e)=>e.uuid!=uuid)}))
     }
 }))
+
+interface subTopicInterface{
+    subTopicNew:{uuid:string,value:String,topic:String,section:String}[],
+    setSubTopicNew:(newItem:String,topic:String,section:String)=>void,
+    removeSubTopic:(uuid:string)=>void
+}
+
+export const useSubTopicStore=create<subTopicInterface>((set)=>({
+    subTopicNew:[{uuid:uuidv4(),value:"",topic:"",section:""}],
+    setSubTopicNew:(newItem,topic,section)=>{
+        set((state)=>({subTopicNew:[...state.subTopicNew,{uuid:uuidv4(),value:newItem,topic:topic,section:section}]}))
+    },
+    removeSubTopic:(uuid)=>{
+        set((state)=>({subTopicNew:state.subTopicNew.filter((e)=>e.uuid!=uuid)}))
+    }
+}))

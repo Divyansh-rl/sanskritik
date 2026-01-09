@@ -59,3 +59,30 @@ export async function DELETE(req:NextRequest){
         return NextResponse.json({message:"Server crashed"},{status:500})
     }
 }
+
+export async function PUT(req:NextRequest) {
+    try{
+        await connectDB();
+        const body=await req.json();
+        const {section,subTopicId,pushOrPull}=body
+
+        if(pushOrPull=='push'){
+            await SectionModel.updateOne({
+                section:section
+            },{
+                $push:{subTopicId:subTopicId}
+            })
+        }else if(pushOrPull=='pull'){
+            await SectionModel.updateOne({
+                section:section
+            },{
+                $pull:{subTopicId:subTopicId}
+            })
+        }
+
+        return NextResponse.json({message:"Update Successfully"},{status:200})
+
+    }catch(e){
+        return NextResponse.json({message:"Server Crashed"},{status:500})
+    }
+}

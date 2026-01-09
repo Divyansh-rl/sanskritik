@@ -69,9 +69,10 @@ export async function PUT(req:NextRequest) {
         await connectDB();
 
         const body=await req.json();
-        const {topic,sectionId,pushOrPull}=body;
+        const {topic,sectionId,pushOrPull,subTopicId}=body;
 
-        if(pushOrPull=="push"){
+       if(sectionId){
+         if(pushOrPull=="push"){
             await TopicModel.updateOne({
             topic:topic
         },{
@@ -84,6 +85,23 @@ export async function PUT(req:NextRequest) {
             $pull:{sectionId:sectionId}
         })
         }
+       }
+
+       if(subTopicId){
+         if(pushOrPull=="push"){
+            await TopicModel.updateOne({
+            topic:topic
+        },{
+            $push:{subTopicId:subTopicId}
+        })
+        }else if(pushOrPull=="pull"){
+            await TopicModel.updateOne({
+            topic:topic
+        },{
+            $pull:{subTopicId:subTopicId}
+        })
+        }
+       }
         
 
         return NextResponse.json({message:"Updated successfully"},{status:200})

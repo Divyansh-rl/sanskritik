@@ -1,6 +1,6 @@
 'use client'
 
-import { useSelectStore,topicType, sectionType, subtopicType, useTopicStore, useSectionStore} from "@/lib/store";
+import { useSelectStore,topicType, sectionType, subtopicType, useTopicStore, useSectionStore, useSubTopicStore} from "@/lib/store";
 import { ArrowDown, ArrowRight, ChevronDown, ChevronRight, CirclePlus, Pencil, Trash } from "lucide-react";
 import { ReactNode, useRef, useState } from "react";
 import { Button } from "./ui/button";
@@ -118,9 +118,8 @@ export function ListNav(props:listProps){
 
     
         
-    const [sections,setSections]=useState([<div className="w-auto h-12 text-2xl flex items-center gap-2 mb-4"><Input ref={sectionRef} type="text" placeholder="Enter topic name"></Input><Button onClick={async()=>{
+    const [sections,setSections]=useState([<div className="w-auto h-12 text-2xl flex items-center gap-2 mb-4"><Input ref={sectionRef} type="text" placeholder="Enter section name"></Input><Button onClick={async()=>{
         const value=sectionRef.current?.value;
-        console.log(value,props.liName)
         if(typeof value=="string")
         await setSectionNew(value,props.liName)
         await addSectionsAPI()
@@ -129,7 +128,7 @@ export function ListNav(props:listProps){
 
     function incSections(){
         if(props.type=="topic"){
-            setSections(prevItems=>[...prevItems,<div className="w-auto h-auto text-2xl flex items-center gap-2 mb-4"><Input ref={sectionRef} type="text" placeholder="Enter topic name"></Input><Button onClick={async()=>{
+            setSections(prevItems=>[...prevItems,<div className="w-auto h-auto text-2xl flex items-center gap-2 mb-4"><Input ref={sectionRef} type="text" placeholder="Enter section name"></Input><Button onClick={async()=>{
         const value=sectionRef.current?.value;
         if(typeof value=="string")
         await setSectionNew(value,props.liName)
@@ -177,6 +176,77 @@ export function ListNav(props:listProps){
         
     }
 
+    
+
+    const setSubTopicNew=useSubTopicStore((state)=>state.setSubTopicNew)
+    const subTopicRef=useRef<HTMLInputElement>(null)
+
+    const [subTopics,setSubTopics]=useState([<div className="w-auto h-12 text-2xl flex items-center gap-2 mb-4"><Input ref={subTopicRef} type="text" placeholder="Enter sub topic name"></Input><Button onClick={async()=>{
+        const value=subTopicRef.current?.value;
+        if(typeof value=="string")
+        await setSubTopicNew(value,topic,section)
+        await addSubTopicsAPI()
+    }}>Done</Button></div>])
+
+    function incSubTopics(){
+        if(props.type=="section"){
+            setSubTopics(prevItems=>[...prevItems,<div className="w-auto h-auto text-2xl flex items-center gap-2 mb-4"><Input ref={subTopicRef} type="text" placeholder="Enter sub topic name"></Input><Button onClick={async()=>{
+        const value=subTopicRef.current?.value;
+        if(typeof value=="string")
+        await setSubTopicNew(value,topic,section)
+        await addSubTopicsAPI()
+    }}>Done</Button></div>])
+        }
+    }
+
+    async function addSubTopicsAPI(){
+        const subTopicName=subTopicRef.current?.value
+        setSubTopics(prevItems=>prevItems.slice(1))
+        const pillar=await axios.get("http://localhost:3000/api/v1/pillar/Architecture")
+
+        //@ts-ignore
+        const pillarName=pillar.data.pillarName
+
+        //@ts-ignore
+        const pillarId=pillar.data.pillarId
+
+        //@ts-ignore
+        const topicId=pillar.data.message.topicId.filter((val)=>val.topic==topic)[0]._id
+
+        //@ts-ignore
+        const sectionId=pillar.data.message.sectionId.filter((val)=>val.section==props.liName)[0]._id
+
+        const subTopic=await axios.post("http://localhost:3000/api/v1/paragraph",{
+            subTopic:subTopicName,
+            section:props.liName,
+            topic:topic,
+            sectionId:sectionId,
+            topicId:topicId,
+            pillarId:pillarId
+        })
+
+        //@ts-ignore
+        const subTopicId=subTopic.data.subTopicId
+
+        await axios.put("http://localhost:3000/api/v1/pillar/Architecture",{
+            pillar:pillarName,
+            subTopicId:subTopicId,
+            pushOrPull:"push"
+        })
+
+        await axios.put("http://localhost:3000/api/v1/topic",{
+            topic:topic,
+            subTopicId:subTopicId,
+            pushOrPull:"push"
+        })
+
+        await axios.put("http://localhost:3000/api/v1/section",{
+            section:props.liName,
+            subTopicId:subTopicId,
+            pushOrPull:"push"
+        })
+    }
+
     return (
     <li className="w-auto h-auto flex flex-col">
          <div className="flex items-center">
@@ -190,12 +260,15 @@ export function ListNav(props:listProps){
     </div>
     <div>
      {/* {hovering?<div>{navItemEdit?<Button onClick={()=>setNavItemEdit(false)}>save</Button>:<div className="flex gap-2"><Pencil onClick={()=>setNavItemEdit(true)}></Pencil><CirclePlus onClick={incSections}></CirclePlus><Trash onClick={deleteItem}></Trash></div>}</div>:<></>}  */}
-        {(topic==props.liName||section==props.liName)?<div  className="flex gap-2 h-auto"><Pencil onClick={()=>setNavItemEdit(true)}></Pencil><CirclePlus onClick={incSections}></CirclePlus><Trash onClick={deleteItem}></Trash></div>:null}
+        {(topic==props.liName||section==props.liName)?<div  className="flex gap-2 h-auto"><Pencil onClick={()=>setNavItemEdit(true)}></Pencil><CirclePlus onClick={topic==props.liName?incSections:incSubTopics}></CirclePlus><Trash onClick={deleteItem}></Trash></div>:null}
     </div>
          </div>
          
         {topic==props.liName&&<div className="ml-4">{props.children}</div>}
         {topic==props.liName&&sections.map((value,index)=><div key={index} className="ml-4">{value}</div>)}
+
+        {section==props.liName&&<div className="ml-4">{props.children}</div>}
+        {section==props.liName&&subTopics.map((value,index)=><div key={index} className="ml-4">{value}</div>)}
     </li>
    
     )

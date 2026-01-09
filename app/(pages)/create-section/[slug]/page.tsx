@@ -4,7 +4,7 @@ import { ListNav } from "@/components/list";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { InputGroup, InputGroupAddon, InputGroupButton } from "@/components/ui/input-group";
-import { useSectionStore, useSelectStore, useTopicStore } from "@/lib/store";
+import { useSectionStore, useSelectStore, useSubTopicStore, useTopicStore } from "@/lib/store";
 import axios from "axios";
 import { ArrowRight, CirclePlus, CircleX, Divide, Landmark, Menu, Pencil, X } from "lucide-react";
 import Image from "next/image";
@@ -57,18 +57,14 @@ setImage4(URL.createObjectURL(event.target.files[0]));
     const section=useSelectStore((state)=>state.section)
 
     const topicRef=useRef<HTMLInputElement>(null)
+    const [topicChange,setTopicChange]=useState("")
 
-    const [topics,setTopics]=useState([<div className="w-auto h-12 text-2xl flex items-center gap-2 mb-4"><Input ref={topicRef} type="text" placeholder="Enter topic name"></Input><Button onClick={async ()=>{
-        const value=topicRef.current?.value;
-        if(typeof value=="string")
-        await setTopicNew(value)
-        await addTopicsAPI()
-    }}>Done</Button></div>]) 
+    const [topics,setTopics]=useState([<div></div>]) 
 
-
+    
     function incTopics(){
-        setTopics(prevItems=>[...prevItems,<div className="w-auto h-auto text-2xl flex items-center gap-2 mb-4"><Input ref={topicRef} type="text" placeholder="Enter topic name"></Input><Button onClick={async()=>{
-        const value=topicRef.current?.value;
+        setTopics(prevItems=>[...prevItems,<div className="w-auto h-auto text-2xl flex items-center gap-2 mb-4"><Input ref={topicRef} onChange={(e)=>setTopicChange(e.target.value)} type="text" placeholder="Enter topic name"></Input><Button onClick={async()=>{
+        const value=topicChange;
         if(typeof value=="string")
         await setTopicNew(value)
         await addTopicsAPI()
@@ -79,6 +75,8 @@ setImage4(URL.createObjectURL(event.target.files[0]));
     const setTopicNew=useTopicStore((state)=>state.setTopicNew)
     const sectionNew=useSectionStore((state)=>state.sectionNew)
     const setSectionNew=useSectionStore((state)=>state.setSectionNew)
+    const subTopicNew=useSubTopicStore((state)=>state.subTopicNew)
+    const setSubTopicNew=useSubTopicStore((state)=>state.setSubTopicNew)
 
     const [paragraphs,setParagraphs]=useState([<div className="w-full h-auto flex gap-5 items-center">
                         
@@ -154,7 +152,7 @@ setImage4(URL.createObjectURL(event.target.files[0]));
         //@ts-ignore
         const topicId=topic.data.topicId
 
-        await axios.put("http://localhost:3000/api/v1/Architecture",{
+        await axios.put("http://localhost:3000/api/v1/pillar/Architecture",{
             pillar:params.slug,
             topicId:topicId,
             pushOrPull:"push"
@@ -179,7 +177,19 @@ setImage4(URL.createObjectURL(event.target.files[0]));
         for(let i=0;i<tempSections.length;i++){
             setSectionNew(tempSections[i],tempSectionsTopic[i])
         }
+
+        //@ts-ignore
+        const tempSubTopics=pillar.data.message.subTopicId.map((state:any)=>state=state.subTopic)
+        //@ts-ignore
+        const tempSubTopicsSection=pillar.data.message.subTopicId.map((state:any)=>state=state.section)
+        //@ts-ignore
+        const tempSubTopicsTopic=pillar.data.message.subTopicId.map((state:any)=>state=state.topic)
+        for(let i=0;i<tempSubTopics.length;i++){
+            setSubTopicNew(tempSubTopics[i],tempSubTopicsTopic[i],tempSubTopicsSection[i])
         }
+
+        }
+
         getTopics()
     },[])
 
@@ -256,11 +266,15 @@ setImage4(URL.createObjectURL(event.target.files[0]));
                         
                         {topicNew.map((items)=>items.value==""?null:<ListNav key={items.uuid} type="topic" key2={items.uuid} liName={items.value}>
                              {sectionNew.map((state)=>state.topic==items.value&&<ul key={state.uuid}> 
-                                <ListNav type="section" liName={state.value}  key2={state.uuid}></ListNav>
+                                <ListNav type="section" liName={state.value}  key2={state.uuid}>
+                                    {subTopicNew.map((subState)=>(subState.topic==items.value && subState.section==state.value) && <ul key={subState.uuid}>
+                                <ListNav type="subTopic" liName={subState.value} key2={subState.uuid}></ListNav>
+                                    </ul>)}
+                                </ListNav>
                              </ul>)}
                         </ListNav>)}
 
-                        {topics.map((items,index)=><div key={index}>{items}</div>)}
+                        {topics.map((items,index)=>items==<div></div>?null:<div key={index}>{items}</div>)}
                         
                         
                        </ul>

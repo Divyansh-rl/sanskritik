@@ -6,14 +6,16 @@ export async function POST(req:NextRequest){
     try{
         await connectDB();
         const body=await req.json();
-    const {title,paragraph,paragraphNumber,sectionId}=body;
+    const {subTopic,section,topic,topicId,sectionId,pillarId}=body;
     
     const content=await ParagraphModel.create({
-       title,paragraph,paragraphNumber,sectionId
+       subTopic:subTopic,section:section,topic:topic,topicId:topicId,sectionId:sectionId,pillarId:pillarId
     })
 
+    const subTopicId=content?._id
+
     if(content){
-        return NextResponse.json({message:"Content Created successfully"},{status:200})
+        return NextResponse.json({message:"Content Created successfully",subTopicId:subTopicId},{status:200})
     }
     }catch(e){
         return NextResponse.json({message:"Server crashed"},{status:500})

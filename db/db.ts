@@ -7,13 +7,15 @@ const ObjectId=mongoose.Schema.Types.ObjectId;
 const PillarSchema=new Schema({
     pillar:{type:String,required:true},
     topicId:[{type:ObjectId,ref:'topics'}],
-    sectionId:[{type:ObjectId,ref:'sections'}]
+    sectionId:[{type:ObjectId,ref:'sections'}],
+    subTopicId:[{type:ObjectId,ref:'paragraphs'}]
 })
 
 const TopicSchema=new Schema({
     topic:{type:String},
     pillarId:{type:ObjectId,ref:'pillars'},
-    sectionId:[{type:ObjectId,ref:'sections'}]
+    sectionId:[{type:ObjectId,ref:'sections'}],
+    subTopicId:[{type:ObjectId,ref:'paragraphs'}]
 })
 
 const SectionSchema=new Schema({
@@ -21,14 +23,17 @@ const SectionSchema=new Schema({
     topic:{type:String},
     pillarId:{type:ObjectId,ref:'pillars'},
     topicId:{type:ObjectId,ref:'topics'},
-    paragraphId:[{type:ObjectId,ref:'paragraphs'}],
+    subTopicId:[{type:ObjectId,ref:'paragraphs'}]
 })
 
 const ParagraphSchema=new Schema({
-    title:{type:String,required:true},
-    paragraph:{type:String},
-    paragraphNumber:Number,
-    sectionId:{type:ObjectId,ref:'sections'}
+     subTopic:{type:String},
+    section:{type:String},
+    topic:{type:String},
+    pillarId:{type:ObjectId,ref:'pillars'},
+    topicId:{type:ObjectId,ref:'topics'},
+    sectionId:{type:ObjectId,ref:'sections'},
+    paragraph:{type:String}
 })
 
 export const PillarModel=mongoose.model('pillars',PillarSchema)

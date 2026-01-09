@@ -1,0 +1,25 @@
+Adding + in random order is probably failing  for both topics and sections fix that why so, we have to do that in order
+Section thing is done start with adding subtopics tom. and dfinally paragraphs after that
+
+Problems:
+
+1. flaws in the add topics logic cant fix rn 
+problem: topic ref or state is same for every new input hence not able to maintain it properly
+probable fix: create an array which is dynamic creating and destroying for every state
+also the array already exist for topic is not able to remove element dynamically after submitting the request and deleting the input
+use better dsa for that
+
+
+
+ subtopics done
+ One problem remaining for already existing
+ when original subtopic input is there request and everything is working fine but its not getting showing up on frontend instantly
+ this is working fine for increasing subtopics input
+ fix it then work for deleting logic + make a card appearing are you sure you want to delete it
+
+ when deleting a topic while sections and subtopics are present give two options
+ proceed with deleting its children first or 
+ are you sure you want to delete whole topic all its children will get deleted as well  (IN RED)
+ if yes then delete all its children as well
+
+  paragraphs remaining

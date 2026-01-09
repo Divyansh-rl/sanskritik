@@ -34,7 +34,7 @@ export async function GET(req:NextRequest,{params}:{params:paramsType}){
 
     const content=await PillarModel.findOne({
         pillar:slug
-    }).populate('topicId').populate('sectionId')
+    }).populate('topicId').populate('sectionId').populate('subTopicId')
 
     const contentId=content?._id
     const pillarName=content?.pillar
@@ -51,7 +51,7 @@ export async function PUT(req:NextRequest) {
         await connectDB();
 
         const body=await req.json();
-        const {pillar,topicId,pushOrPull,sectionId}=body;
+        const {pillar,topicId,pushOrPull,sectionId,subTopicId}=body;
 
         if(topicId){
             if(pushOrPull=="push"){
@@ -81,6 +81,22 @@ export async function PUT(req:NextRequest) {
             pillar:pillar
         },{
             $pull:{sectionId:sectionId}
+        })
+        }
+        }
+
+        if(subTopicId){
+            if(pushOrPull=="push"){
+            await PillarModel.updateOne({
+            pillar:pillar
+        },{
+            $push:{subTopicId:subTopicId}
+        })
+        }else if(pushOrPull=="pull"){
+            await PillarModel.updateOne({
+            pillar:pillar
+        },{
+            $pull:{subTopicId:subTopicId}
         })
         }
         }
