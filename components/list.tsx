@@ -1,8 +1,8 @@
 'use client'
 
-import { useSelectStore,topicType, sectionType, subtopicType, useTopicStore, useSectionStore, useSubTopicStore} from "@/lib/store";
+import { useSelectStore,topicType, sectionType, subtopicType, useTopicStore, useSectionStore, useSubTopicStore, useYPos} from "@/lib/store";
 import { ArrowDown, ArrowRight, ChevronDown, ChevronRight, CirclePlus, Pencil, Trash } from "lucide-react";
-import { ReactNode, useRef, useState } from "react";
+import { ReactNode, useEffect, useRef, useState } from "react";
 import { Button } from "./ui/button";
 import axios from "axios";
 import { useParams } from "next/navigation";
@@ -58,6 +58,7 @@ export function ListNav(props:listProps){
     const topicNew=useTopicStore((state)=>state.topicNew)
     const removeTopic=useTopicStore((state=>state.removeTopic))
     const removeSection=useSectionStore((state)=>state.removeSection)
+    const removeSubTopic=useSubTopicStore((state)=>state.removeSubTopic)
     const sectionNew=useSectionStore((state)=>state.sectionNew)
 
     const params=useParams()
@@ -108,6 +109,37 @@ export function ListNav(props:listProps){
             pushOrPull:"pull"
         })
 
+        }else if(props.type=="subTopic"){
+            removeSubTopic(props.key2)
+
+            const subTopic=await axios.request({
+            method:'DELETE',
+            url:"http://localhost:3000/api/v1/paragraph",
+            data:{
+                subTopic:props.liName,topic:topic,section:section 
+            }
+        })
+
+        //@ts-ignore
+        const subTopicId=subTopic.data.subTopicId
+
+        await axios.put("http://localhost:3000/api/v1/pillar/Architecture",{
+            pillar:params.slug,
+            subTopicId:subTopicId,
+            pushOrPull:"pull"
+        })
+
+        await axios.put("http://localhost:3000/api/v1/topic",{
+            topic:topic,
+            subTopicId:subTopicId,
+            pushOrPull:"pull"
+        })
+
+        await axios.put("http://localhost:3000/api/v1/section",{
+            section:section,
+            subTopicId:subTopicId,
+            pushOrPull:"pull"
+        })
         }
 
     }
@@ -247,9 +279,40 @@ export function ListNav(props:listProps){
         })
     }
 
+    const elementRef=useRef<HTMLDivElement>(null)
+        const setYPos=useYPos((state)=>state.setYPos)
+    
+        const getPosition=()=>{
+            if(elementRef.current){
+                const rect=elementRef.current.getBoundingClientRect();
+                setYPos(rect.top)
+            }
+        }
+        const act=useYPos((state)=>state.act)
+        const setAct=useYPos((state)=>state.setAct)
+        useEffect(()=>{
+            if(act=='true'){
+            getPosition()
+            window.addEventListener("resize",getPosition)
+            window.addEventListener('scroll', getPosition);
+        return () => {
+          window.removeEventListener('resize', getPosition);
+          window.removeEventListener('scroll', getPosition);
+        };
+            }
+        },[act])
+
+        
+        useEffect(()=>{
+            if(act=="delete"){
+                deleteItem()
+                setAct("false")
+            }
+        },[act])
+
     return (
-    <li className="w-auto h-auto flex flex-col">
-         <div className="flex items-center">
+    <li  className="w-auto h-auto flex flex-col">
+         <div  className="flex items-center">
             <div onMouseOver={()=>setHovering(true)} onMouseLeave={()=>setHovering(false)} onClick={updateItem}  className={(props.type=='subTopic' && subTopic==props.liName)?"w-72 h-auto mb-4 flex items-center gap-3 rounded-[100px]  p-4 bg-[hsl(0,30%,20%,20%)] cursor-pointer":"w-72 h-auto mb-4 flex items-center gap-3 rounded-[100px]  p-4 transition-all duration-175 hover:bg-[hsl(0,30%,20%,20%)] cursor-pointer"}>
        <div className="w-6 h-6 flex items-center justify-center gap-2">
             {props.type=="topic"&&(topic==props.liName?<div><ChevronDown/></div>:<div><ChevronRight/></div>)}
@@ -258,9 +321,9 @@ export function ListNav(props:listProps){
         <div>{navItemEdit?<input onChange={(e)=>setNavItem(e.target.value)} value={navItem as string}></input>:navItem}</div>
         
     </div>
-    <div>
+    <div ref={(act=="true" && topic==props.liName)?elementRef:null}>
      {/* {hovering?<div>{navItemEdit?<Button onClick={()=>setNavItemEdit(false)}>save</Button>:<div className="flex gap-2"><Pencil onClick={()=>setNavItemEdit(true)}></Pencil><CirclePlus onClick={incSections}></CirclePlus><Trash onClick={deleteItem}></Trash></div>}</div>:<></>}  */}
-        {(topic==props.liName||section==props.liName)?<div  className="flex gap-2 h-auto"><Pencil onClick={()=>setNavItemEdit(true)}></Pencil><CirclePlus onClick={topic==props.liName?incSections:incSubTopics}></CirclePlus><Trash onClick={deleteItem}></Trash></div>:null}
+        {(topic==props.liName||section==props.liName)?<div  className="flex gap-2 h-auto"><Pencil onClick={()=>setNavItemEdit(true)}></Pencil><CirclePlus onClick={topic==props.liName?incSections:incSubTopics}></CirclePlus><Trash onClick={()=>setAct("true")}></Trash></div>:subTopic==props.liName?<div  className="flex gap-2 h-auto"><Pencil onClick={()=>setNavItemEdit(true)}></Pencil><Trash onClick={()=>setAct("true")}></Trash></div>:null}
     </div>
          </div>
          

@@ -98,3 +98,21 @@ export const useSubTopicStore=create<subTopicInterface>((set)=>({
         set((state)=>({subTopicNew:state.subTopicNew.filter((e)=>e.uuid!=uuid)}))
     }
 }))
+
+interface yPosInterface{
+    yPos:number,
+    setYPos:(val:number)=>void,
+    act:String,
+    setAct:(val:String)=>void
+}
+
+export const useYPos=create<yPosInterface>((set)=>({
+    yPos:-1,
+    setYPos:((val)=>{
+        set(()=>({yPos:val}))
+    }),
+    act:"false",
+    setAct:((val)=>{
+        set(()=>({act:val}))
+    })
+}))

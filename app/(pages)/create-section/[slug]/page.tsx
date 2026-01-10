@@ -4,7 +4,7 @@ import { ListNav } from "@/components/list";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { InputGroup, InputGroupAddon, InputGroupButton } from "@/components/ui/input-group";
-import { useSectionStore, useSelectStore, useSubTopicStore, useTopicStore } from "@/lib/store";
+import { useSectionStore, useSelectStore, useSubTopicStore, useTopicStore, useYPos } from "@/lib/store";
 import axios from "axios";
 import { ArrowRight, CirclePlus, CircleX, Divide, Landmark, Menu, Pencil, X } from "lucide-react";
 import Image from "next/image";
@@ -193,6 +193,10 @@ setImage4(URL.createObjectURL(event.target.files[0]));
         getTopics()
     },[])
 
+    const yPos=useYPos((state)=>state.yPos)
+    const act=useYPos((state)=>state.act)
+    const setAct=useYPos((state)=>state.setAct)
+
   return (
     <div className="w-full h-full bg-[#eee8c3] text-[#372111] flex flex-col gap-18">
       {/*Header*/}
@@ -234,8 +238,8 @@ setImage4(URL.createObjectURL(event.target.files[0]));
 
     
       <div className="w-full h-full flex gap-12 px-24">
-            <div className="min-w-90 h-full">
-                <div className="w-full h-auto px-5 py-5 bg-[hsl(0,30%,20%,10%)] rounded-2xl flex flex-col ">
+            <div className="min-w-90 h-full flex">
+                <div  className="w-full h-auto px-5 py-5 bg-[hsl(0,30%,20%,10%)] rounded-2xl flex flex-col ">
                     <div className="w-auto h-auto mt-3 mx-2 flex justify-between">
                         <div  className="w-auto h-auto flex items-center text-[22px] mb-4">
                             Table of Contents
@@ -281,6 +285,14 @@ setImage4(URL.createObjectURL(event.target.files[0]));
                     </div>
                     
                 </div>
+
+                {act=="true"?<div className="left-114 fixed flex flex-col gap-2" style={{top:yPos}}>
+                    <div>are you sure you want to delete</div> 
+                    <div className="flex gap-1">
+                        <div onClick={()=>setAct("delete")}>Yes</div>
+                        <div onClick={()=>setAct("false")}>No</div>
+                    </div>
+                    </div>:null}
                 
             </div>
 

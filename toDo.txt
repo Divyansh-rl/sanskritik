@@ -8,6 +8,7 @@ problem: topic ref or state is same for every new input hence not able to mainta
 probable fix: create an array which is dynamic creating and destroying for every state
 also the array already exist for topic is not able to remove element dynamically after submitting the request and deleting the input
 use better dsa for that
+or try using useRef and useState simultaneously like done in getting y position dynamically logic for delete card
 
 
 
@@ -23,3 +24,5 @@ use better dsa for that
  if yes then delete all its children as well
 
   paragraphs remaining
+
+  nigga deleted all of the topics I am crying

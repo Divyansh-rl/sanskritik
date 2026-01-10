@@ -40,3 +40,21 @@ export async function GET(req:NextRequest){
     }
     
 }
+
+export async function DELETE(req:NextRequest) {
+    try{
+        const body=await req.json();
+        const {subTopic,section,topic}=body
+
+        const content=await ParagraphModel.findOneAndDelete({
+            subTopic:subTopic,
+            section:section,
+            topic:topic
+        })
+    const contentId=content?._id
+        
+        return NextResponse.json({message:"Deleted Successfully",subTopicId:contentId},{status:200})
+    }catch(e){
+        return NextResponse.json({message:"Server crashed"},{status:500})
+    }
+}
